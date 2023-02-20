@@ -1,0 +1,53 @@
+function Gauss(n, A, b)
+% 高斯列主元消去法函数
+% n为线性方程组个数，A为系数矩阵，b为右端项系数矩阵
+% 返回值X为解得的近似解矩阵
+x = zeros(1, n);
+for k = 1:n-1
+    temp0 = abs(A(k, k));
+    p = k;
+    for j = k:n
+        if abs(A(j, k)) > temp0
+            temp0 = abs(A(j, k));
+            p = j;
+        end
+    end
+    if temp0 == 0
+        disp('系数矩阵奇异');
+        return;
+    end
+    if p ~= k
+        temp1 = A(p, 1:n);
+        A(p, 1:n) = A(k, 1:n);
+        A(k, 1:n) = temp1;
+        temp2 = b(p);
+        b(p) = b(k);
+        b(k) = temp2;
+    end
+    for i = k+1:n
+        m = A(i, k)/A(k, k);
+        b(i) = b(i)-b(k)*m;
+        for j = k+1:n
+            A(i, j) = A(i, j)-A(k, j)*m;
+        end
+    end
+    if A(n, n) == 0
+        disp('系数矩阵奇异');
+        return;
+    end
+end
+x(n) = b(n)/A(n, n);
+k = n-1;
+syms j;
+while k > 0
+    sum = 0;
+    for j = k+1:n
+        sum = sum+A(k, j)*x(j);
+    end
+    x(k) = (b(k)-sum)/A(k, k);
+    k = k-1;
+end
+disp('该线性方程组的解为:');
+disp(x);
+end
+
